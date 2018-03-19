@@ -3,8 +3,8 @@ var markers = [];
 
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 2,
-    center: new google.maps.LatLng(0,0),
+    zoom: 10,
+    center: new google.maps.LatLng(22.3,114.2),
     mapTypeId: 'roadmap',
   });
   getAirtableData();
@@ -14,7 +14,7 @@ function initMap() {
 // set of coordinates.
 
 function getAirtableData() {
-  fetch("https://api.airtable.com/v0/apptDNPo9jnXShzNh/Map%20Test?view=Grid%20view", {
+  fetch("https://api.airtable.com/v0/apptDNPo9jnXShzNh/Recycling%20Test?view=Grid%20view", {
     headers: {
       Authorization: "Bearer keyOfJOed1eMhUOGH"
     }
@@ -89,24 +89,33 @@ function getAirtableData() {
         });
 
       var icons = {
-          A: {
-            icon: 'https://dl.dropbox.com/s/mpis7ueeqpjecaa/windturbine.png'
+          Batteries: {
+            icon: {
+              url: 'https://dl.dropbox.com/s/b8ct97gmw8f1mlo/CustomBatteriesIcon.svg',
+              scaledSize: new google.maps.Size(72,72),
+              anchor: new google.maps.Point(36,72)
+            }
           },
-          B: {
-            icon: 'https://dl.dropbox.com/s/wxps5xdweo9bu7q/leopard_snow.png'
+          Glass: {
+            icon:{
+              url: 'https://dl.dropbox.com/s/34d9hx5573m2xo9/CustomGlassIcon.svg',
+              scaledSize: new google.maps.Size(72,72),
+              anchor: new google.maps.Point(36,72)
+            }
           },
-          C: {
-            icon: 'https://dl.dropbox.com/s/mpy63j14ho2swru/beautifulview.png'
-          },
-          D: {
-            icon: 'https://dl.dropbox.com/s/tcegvl1i7ckdcep/algae.png'
+          Mixed: {
+            icon: {
+              url: 'https://dl.dropbox.com/s/a7hixnwqudgtcn2/CustomRecycleIcon.svg',
+              scaledSize: new google.maps.Size(72,72),
+              anchor: new google.maps.Point(36,72)
+            }
           }
         };
 
       var marker = new google.maps.Marker({
         position: latLng,
         category: category,
-        icon: icons[item.fields.Type].icon,
+        icon: icons[item.fields.Icon].icon,
         map: map
       });
         marker.addListener('click', function() {
@@ -125,7 +134,7 @@ filterMarkers = function (category) {
     for (i = 0; i < markers.length; i++) {
         filteredMarker = markers[i];
         // If is same category or category not picked
-        if (filteredMarker.category == category || category.length === 0) {
+        if (filteredMarker.category.indexOf(category) >= 0 || category.length === 0) {
             filteredMarker.setVisible(true);
         }
         // Categories don't match
